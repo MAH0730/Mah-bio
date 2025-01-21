@@ -156,8 +156,6 @@
         </div>
     </div>
 
-    <!-- Audio Control Button -->
-
     <script>
         const bgMusic = document.getElementById('bgMusic');
         const bgVideo = document.getElementById('bgVideo');
@@ -170,16 +168,10 @@
 
         let isPlaying = false;
 
-        // Function to toggle audio play/pause
-        function toggleAudio() {
-            if (isPlaying) {
-                bgMusic.pause();
-                audioIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            } else {
-                bgMusic.play();
-                audioIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
-            }
-            isPlaying = !isPlaying;
+        // Function to handle synchronization of both audio and video playback
+        function playMedia() {
+            bgMusic.play();
+            bgVideo.play();
         }
 
         // Handle user decision to play music
@@ -187,9 +179,7 @@
             welcomeOverlay.style.display = 'none'; // Hide overlay
             videoContainer.style.display = 'block'; // Show video
             caption.style.display = 'block'; // Show content
-            bgMusic.play(); // Start music
-            bgVideo.play(); // Start video
-            audioControl.style.display = 'block'; // Show audio controls
+            playMedia(); // Start both video and audio simultaneously
         });
 
         document.getElementById('noBtn').addEventListener('click', function() {
@@ -198,14 +188,10 @@
             caption.style.display = 'block'; // Show content
             bgVideo.play(); // Start video
             bgVideo.muted = true; // Mute video when no music is playing
-            audioControl.style.display = 'none'; // Hide audio controls
         });
 
-        // Add click event listener to toggle audio
+        // Add click event listener to toggle audio (removed audio control section)
         audioControl.addEventListener('click', toggleAudio);
-
-        // Start animating text if music is playing
-        bgMusic.addEventListener('play', animateText);
     </script>
 </body>
 </html>
