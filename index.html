@@ -157,10 +157,6 @@
     </div>
 
     <!-- Audio Control Button -->
-    <div class="audio-control" id="audioControl">
-        <div class="audio-icon" id="audioIcon"><i class="fas fa-volume-mute"></i></div>
-        <div class="audio-text" id="audioText">Tap To Play Music</div>
-    </div>
 
     <script>
         const bgMusic = document.getElementById('bgMusic');
@@ -207,17 +203,6 @@
 
         // Add click event listener to toggle audio
         audioControl.addEventListener('click', toggleAudio);
-
-        // Function to animate text
-        function animateText() {
-            audioText.classList.add('active');
-            setTimeout(() => {
-                audioText.classList.remove('active');
-            }, 1000);
-
-            // Repeat animation every 5 seconds
-            setTimeout(animateText, 5000);
-        }
 
         // Start animating text if music is playing
         bgMusic.addEventListener('play', animateText);
