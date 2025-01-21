@@ -8,32 +8,125 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Comfortaa">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-    <!-- Embed Do DC -->
-    <meta content="Mah Bio" property="og:title" />
-    <meta content="Bio Site Of @Mah" property="og:description" />
-    <meta content="localhost" property="og:url" />
-    <meta content="https://i.postimg.cc/Vkbnwdtp/IMG-20250105-141147-084.jpg" property="og:image" />
-    <meta content="#000000" data-react-helmet="true" name="theme-color" />
-
     <style>
-        /* General styles */
-  
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comfortaa', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Fullscreen video */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: none; /* Initially hidden */
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            loop: true;  /* This makes the video loop */
+        }
+
+        /* Welcome prompt */
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .welcome-overlay .prompt {
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            max-width: 80%;
+        }
+
+        /* Button styles */
+        .button {
+            font-size: 18px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+        }
+
+        .yes-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .no-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* Audio control button styles */
+        .audio-control {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .audio-text {
+            margin-top: 10px;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .audio-text.active {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <!-- Background Video -->
-    <div class="video-container">
-        <video autoplay muted loop>
+    <div class="video-container" id="videoContainer">
+        <video id="bgVideo" muted loop preload="auto">
             <source src="mah.mp4" type="video/mp4" />
         </video>
         <!-- Background Music -->
-        <audio id="bgMusic" loop>
+        <audio id="bgMusic" loop preload="auto">
             <source src="mah.mp4" type="audio/mpeg" />
         </audio>
     </div>
 
+    <!-- Welcome Overlay -->
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="prompt">
+            <p>Do you want to play music on this site?</p>
+            <button id="yesBtn" class="button yes-btn">Yes</button>
+            <button id="noBtn" class="button no-btn">No</button>
+        </div>
+    </div>
+
     <!-- Content Section -->
-    <div class="caption">
+    <div class="caption" id="caption">
         <div class="card-container">
             <div class="card">
                 <!-- Logo -->
@@ -58,7 +151,6 @@
                         <div class="song-title">Mah</div>
                         <div class="song-author">life with mending</div>
                     </div>
-                    <div class="card-glow"></div>
                 </div>
             </div>
         </div>
@@ -72,6 +164,10 @@
 
     <script>
         const bgMusic = document.getElementById('bgMusic');
+        const bgVideo = document.getElementById('bgVideo');
+        const videoContainer = document.getElementById('videoContainer');
+        const welcomeOverlay = document.getElementById('welcomeOverlay');
+        const caption = document.getElementById('caption');
         const audioControl = document.getElementById('audioControl');
         const audioIcon = document.getElementById('audioIcon');
         const audioText = document.getElementById('audioText');
@@ -90,6 +186,25 @@
             isPlaying = !isPlaying;
         }
 
+        // Handle user decision to play music
+        document.getElementById('yesBtn').addEventListener('click', function() {
+            welcomeOverlay.style.display = 'none'; // Hide overlay
+            videoContainer.style.display = 'block'; // Show video
+            caption.style.display = 'block'; // Show content
+            bgMusic.play(); // Start music
+            bgVideo.play(); // Start video
+            audioControl.style.display = 'block'; // Show audio controls
+        });
+
+        document.getElementById('noBtn').addEventListener('click', function() {
+            welcomeOverlay.style.display = 'none'; // Hide overlay
+            videoContainer.style.display = 'block'; // Show video without audio
+            caption.style.display = 'block'; // Show content
+        });
+
+        // Add click event listener to toggle audio
+        audioControl.addEventListener('click', toggleAudio);
+
         // Function to animate text
         function animateText() {
             audioText.classList.add('active');
@@ -101,19 +216,8 @@
             setTimeout(animateText, 5000);
         }
 
-        // Initial call to animate text
-        animateText();
-
-        // Add click event listener to toggle audio
-        audioControl.addEventListener('click', toggleAudio);
-
-        // Attempt to play audio on page load
-        window.addEventListener('load', () => {
-            bgMusic.play().catch(error => {
-                // If playback fails, it is likely due to autoplay restrictions.
-                console.log("Audio autoplay blocked: ", error);
-            });
-        });
+        // Start animating text if music is playing
+        bgMusic.addEventListener('play', animateText);
     </script>
 </body>
 </html>
