@@ -198,8 +198,11 @@
 
         document.getElementById('noBtn').addEventListener('click', function() {
             welcomeOverlay.style.display = 'none'; // Hide overlay
-            videoContainer.style.display = 'block'; // Show video without audio
+            videoContainer.style.display = 'block'; // Show video
             caption.style.display = 'block'; // Show content
+            bgVideo.play(); // Start video
+            bgVideo.muted = true; // Mute video when no music is playing
+            audioControl.style.display = 'none'; // Hide audio controls
         });
 
         // Add click event listener to toggle audio
