@@ -78,12 +78,12 @@
 <body>
     <!-- Background Video -->
     <div class="video-container">
-        <video autoplay muted loop>
+        <video id="backgroundVideo" autoplay muted loop>
             <source src="mah.mp4" type="video/mp4" />
         </video>
         <!-- Background Music -->
         <audio id="bgMusic" loop>
-            <source src="mah.mp4" type="audio/mpeg" />
+            <source src="mah.mp3" type="audio/mpeg" />
         </audio>
     </div>
 
@@ -124,58 +124,39 @@
         <i class="fas fa-play"></i> Play Song
     </button>
 
-    <!-- Audio Control -->
-    <div class="audio-control" id="audioControl">
-        <div class="audio-icon" id="audioIcon"><i class="fas fa-volume-mute"></i></div>
-        <div class="audio-text" id="audioText">Tap To Play Music</div>
-    </div>
-
     <script>
+        const bgVideo = document.getElementById('backgroundVideo');
         const bgMusic = document.getElementById('bgMusic');
-        const audioControl = document.getElementById('audioControl');
-        const audioIcon = document.getElementById('audioIcon');
-        const audioText = document.getElementById('audioText');
         const playSongButton = document.getElementById('playSongButton');
-
         let isPlaying = false;
 
-        // Function to toggle audio play/pause
-        function toggleAudio() {
+        // Function to toggle video and music play/pause
+        function toggleMedia() {
             if (isPlaying) {
+                bgVideo.pause();
                 bgMusic.pause();
-                audioIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
                 playSongButton.innerHTML = '<i class="fas fa-play"></i> Play Song';
             } else {
+                bgVideo.play();
                 bgMusic.play();
-                audioIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
                 playSongButton.innerHTML = '<i class="fas fa-pause"></i> Pause Song';
             }
             isPlaying = !isPlaying;
         }
 
-        // Add click event listener to toggle audio
-        playSongButton.addEventListener('click', toggleAudio);
+        // Add click event listener to toggle play/pause for both video and audio
+        playSongButton.addEventListener('click', toggleMedia);
 
-        // Attempt to play audio on page load
+        // Attempt to play video and audio on page load
         window.addEventListener('load', () => {
+            bgVideo.play().catch(error => {
+                console.log("Video autoplay blocked: ", error);
+            });
+
             bgMusic.play().catch(error => {
                 console.log("Audio autoplay blocked: ", error);
             });
         });
-
-        // Function to animate text
-        function animateText() {
-            audioText.classList.add('active');
-            setTimeout(() => {
-                audioText.classList.remove('active');
-            }, 1000);
-
-            // Repeat animation every 5 seconds
-            setTimeout(animateText, 5000);
-        }
-
-        // Initial call to animate text
-        animateText();
     </script>
 </body>
 </html>
