@@ -17,7 +17,62 @@
 
     <style>
         /* General styles */
-  
+        body {
+            font-family: 'Comfortaa', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* Background video and music container */
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Song control button styles */
+        .play-song-button {
+            background: linear-gradient(45deg, #ff6a00, #ee0979);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .play-song-button:hover {
+            background: linear-gradient(45deg, #ee0979, #ff6a00);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        .play-song-button:focus {
+            outline: none;
+        }
+
+        .play-song-button i {
+            margin-right: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -64,7 +119,12 @@
         </div>
     </div>
 
-    <!-- Audio Control Button -->
+    <!-- Play Song Button -->
+    <button class="play-song-button" id="playSongButton">
+        <i class="fas fa-play"></i> Play Song
+    </button>
+
+    <!-- Audio Control -->
     <div class="audio-control" id="audioControl">
         <div class="audio-icon" id="audioIcon"><i class="fas fa-volume-mute"></i></div>
         <div class="audio-text" id="audioText">Tap To Play Music</div>
@@ -75,6 +135,7 @@
         const audioControl = document.getElementById('audioControl');
         const audioIcon = document.getElementById('audioIcon');
         const audioText = document.getElementById('audioText');
+        const playSongButton = document.getElementById('playSongButton');
 
         let isPlaying = false;
 
@@ -83,12 +144,24 @@
             if (isPlaying) {
                 bgMusic.pause();
                 audioIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                playSongButton.innerHTML = '<i class="fas fa-play"></i> Play Song';
             } else {
                 bgMusic.play();
                 audioIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+                playSongButton.innerHTML = '<i class="fas fa-pause"></i> Pause Song';
             }
             isPlaying = !isPlaying;
         }
+
+        // Add click event listener to toggle audio
+        playSongButton.addEventListener('click', toggleAudio);
+
+        // Attempt to play audio on page load
+        window.addEventListener('load', () => {
+            bgMusic.play().catch(error => {
+                console.log("Audio autoplay blocked: ", error);
+            });
+        });
 
         // Function to animate text
         function animateText() {
@@ -103,17 +176,6 @@
 
         // Initial call to animate text
         animateText();
-
-        // Add click event listener to toggle audio
-        audioControl.addEventListener('click', toggleAudio);
-
-        // Attempt to play audio on page load
-        window.addEventListener('load', () => {
-            bgMusic.play().catch(error => {
-                // If playback fails, it is likely due to autoplay restrictions.
-                console.log("Audio autoplay blocked: ", error);
-            });
-        });
     </script>
 </body>
 </html>
