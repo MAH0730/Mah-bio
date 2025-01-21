@@ -8,74 +8,27 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Comfortaa">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
+    <!-- Embed Do DC -->
+    <meta content="Mah Bio" property="og:title" />
+    <meta content="Bio Site Of @Mah" property="og:description" />
+    <meta content="localhost" property="og:url" />
+    <meta content="https://i.postimg.cc/Vkbnwdtp/IMG-20250105-141147-084.jpg" property="og:image" />
+    <meta content="#000000" data-react-helmet="true" name="theme-color" />
+
     <style>
         /* General styles */
-        body {
-            font-family: 'Comfortaa', sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        /* Background video and music container */
-        .video-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Song control button styles */
-        .play-song-button {
-            background: linear-gradient(45deg, #ff6a00, #ee0979);
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease-in-out;
-        }
-
-        .play-song-button:hover {
-            background: linear-gradient(45deg, #ee0979, #ff6a00);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-            transform: translateX(-50%) translateY(-5px);
-        }
-
-        .play-song-button:focus {
-            outline: none;
-        }
-
-        .play-song-button i {
-            margin-right: 10px;
-        }
+  
     </style>
 </head>
 <body>
     <!-- Background Video -->
     <div class="video-container">
-        <video id="backgroundVideo" muted loop>
+        <video autoplay muted loop>
             <source src="mah.mp4" type="video/mp4" />
         </video>
         <!-- Background Music -->
         <audio id="bgMusic" loop>
-            <source src="mah.mp3" type="audio/mpeg" />
+            <source src="mah.mp4" type="audio/mpeg" />
         </audio>
     </div>
 
@@ -111,63 +64,55 @@
         </div>
     </div>
 
-    <!-- Play Song Button -->
-    <button class="play-song-button" id="playSongButton">
-        <i class="fas fa-play"></i> Play Song
-    </button>
+    <!-- Audio Control Button -->
+    <div class="audio-control" id="audioControl">
+        <div class="audio-icon" id="audioIcon"><i class="fas fa-volume-mute"></i></div>
+        <div class="audio-text" id="audioText">Tap To Play Music</div>
+    </div>
 
     <script>
-        const bgVideo = document.getElementById('backgroundVideo');
         const bgMusic = document.getElementById('bgMusic');
-        const playSongButton = document.getElementById('playSongButton');
+        const audioControl = document.getElementById('audioControl');
+        const audioIcon = document.getElementById('audioIcon');
+        const audioText = document.getElementById('audioText');
+
         let isPlaying = false;
 
-        // Function to start both video and audio
-        function playMedia() {
-            // Ensure the video is playing (unmuted) and audio is playing together
-            bgVideo.muted = false;  // Unmute the video when play starts
-            bgVideo.play().catch(error => {
-                console.log("Video autoplay blocked: ", error);
-            });
+        // Function to toggle audio play/pause
+        function toggleAudio() {
+            if (isPlaying) {
+                bgMusic.pause();
+                audioIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else {
+                bgMusic.play();
+                audioIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+            isPlaying = !isPlaying;
+        }
 
+        // Function to animate text
+        function animateText() {
+            audioText.classList.add('active');
+            setTimeout(() => {
+                audioText.classList.remove('active');
+            }, 1000);
+
+            // Repeat animation every 5 seconds
+            setTimeout(animateText, 5000);
+        }
+
+        // Initial call to animate text
+        animateText();
+
+        // Add click event listener to toggle audio
+        audioControl.addEventListener('click', toggleAudio);
+
+        // Attempt to play audio on page load
+        window.addEventListener('load', () => {
             bgMusic.play().catch(error => {
+                // If playback fails, it is likely due to autoplay restrictions.
                 console.log("Audio autoplay blocked: ", error);
             });
-
-            playSongButton.innerHTML = '<i class="fas fa-pause"></i> Pause Song';
-            isPlaying = true;
-        }
-
-        // Function to pause both video and audio
-        function pauseMedia() {
-            bgVideo.pause();
-            bgMusic.pause();
-            playSongButton.innerHTML = '<i class="fas fa-play"></i> Play Song';
-            isPlaying = false;
-        }
-
-        // Toggle play/pause when button is clicked
-        playSongButton.addEventListener('click', function() {
-            if (isPlaying) {
-                pauseMedia();
-            } else {
-                playMedia();
-            }
-        });
-
-        // Sync video and audio on play
-        bgVideo.onplay = function() {
-            bgMusic.play();
-        };
-
-        bgVideo.onpause = function() {
-            bgMusic.pause();
-        };
-
-        // Attempt to play both media on page load (with user interaction)
-        window.addEventListener('load', () => {
-            // Show the play button until the user interacts
-            bgVideo.muted = true; // Mute video by default
         });
     </script>
 </body>
