@@ -42,4 +42,133 @@
             font-weight: bold;
             padding: 15px 30px;
             border: none;
-         
+            border-radius: 50px;
+            cursor: pointer;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .play-song-button:hover {
+            background: linear-gradient(45deg, #ee0979, #ff6a00);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        .play-song-button:focus {
+            outline: none;
+        }
+
+        .play-song-button i {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Video -->
+    <div class="video-container">
+        <video id="backgroundVideo" muted loop>
+            <source src="mah.mp4" type="video/mp4" />
+        </video>
+        <!-- Background Music -->
+        <audio id="bgMusic" loop>
+            <source src="mah.mp3" type="audio/mpeg" />
+        </audio>
+    </div>
+
+    <!-- Content Section -->
+    <div class="caption">
+        <div class="card-container">
+            <div class="card">
+                <!-- Logo -->
+                <div class="logo">
+                    <img src="https://i.postimg.cc/9XwmC5Ws/IMG-20250111-125148-358.webp" alt="Logo">
+                </div>
+                <!-- Name -->
+                <div class="nick">MAH</div>
+                <!-- Links -->
+                <div class="icon-links">
+                    <a href="t.me/MAH_B0T" target="_blank"><i class="fab fa-telegram"></i></a>
+                    <a href="https://youtube.com/@teachgamerof?si=vpjuXCkY_HQiS9g-" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="https://github.com" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://www.instagram.com/mah._.b0t" target="_blank"><i class="fab fa-instagram"></i></a>
+                </div>
+                <!-- Song Card -->
+                <div class="song-card">
+                    <div class="song-cover">
+                        <img src="https://i.postimg.cc/Vkbnwdtp/IMG-20250105-141147-084.jpg" alt="Okładka">
+                    </div>
+                    <div class="song-info">
+                        <div class="song-title">Mah</div>
+                        <div class="song-author">life with mending</div>
+                    </div>
+                    <div class="card-glow"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Play Song Button -->
+    <button class="play-song-button" id="playSongButton">
+        <i class="fas fa-play"></i> Play Song
+    </button>
+
+    <script>
+        const bgVideo = document.getElementById('backgroundVideo');
+        const bgMusic = document.getElementById('bgMusic');
+        const playSongButton = document.getElementById('playSongButton');
+        let isPlaying = false;
+
+        // Function to start both video and audio
+        function playMedia() {
+            // Ensure the video is playing (unmuted) and audio is playing together
+            bgVideo.muted = false;  // Unmute the video when play starts
+            bgVideo.play().catch(error => {
+                console.log("Video autoplay blocked: ", error);
+            });
+
+            bgMusic.play().catch(error => {
+                console.log("Audio autoplay blocked: ", error);
+            });
+
+            playSongButton.innerHTML = '<i class="fas fa-pause"></i> Pause Song';
+            isPlaying = true;
+        }
+
+        // Function to pause both video and audio
+        function pauseMedia() {
+            bgVideo.pause();
+            bgMusic.pause();
+            playSongButton.innerHTML = '<i class="fas fa-play"></i> Play Song';
+            isPlaying = false;
+        }
+
+        // Toggle play/pause when button is clicked
+        playSongButton.addEventListener('click', function() {
+            if (isPlaying) {
+                pauseMedia();
+            } else {
+                playMedia();
+            }
+        });
+
+        // Sync video and audio on play
+        bgVideo.onplay = function() {
+            bgMusic.play();
+        };
+
+        bgVideo.onpause = function() {
+            bgMusic.pause();
+        };
+
+        // Attempt to play both media on page load (with user interaction)
+        window.addEventListener('load', () => {
+            // Show the play button until the user interacts
+            bgVideo.muted = true; // Mute video by default
+        });
+    </script>
+</body>
+</html>
